@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Hello</title>
+	<title>Lightweigh</title>
 	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
 	<style>
@@ -14,6 +15,15 @@
 		}
 		ul{
 			list-style: none;
+		}
+		.footer {
+		   position: fixed;
+		   left: 0;
+		   bottom: 0;
+		   width: 100%;
+		   background-color: gray;
+		   color: white;
+		   text-align: center;
 		}
 	</style>
 </head>
@@ -28,8 +38,11 @@
 						
 						<br/>
 
-						<input type="button" class="btn btn-primary" value="login" id="login"/>
+						<input type="button" class="btn btn-primary" value="login" id="login" placeholder="Enter your name" />
 					</div>
+					<p>Welcome to lightweig</p>
+					<p>A generic application development zone.</p>
+					<p>Our main motive is to developing light weighted application to save internet data.</p>
 				</form>
 			</div>
 		</div>
@@ -58,6 +71,10 @@
 					</div>
 				</form>
 			</div>
+		</div>
+		<div class="footer">
+		  <p><i class="fa fa-copyright"></i> COPYRIGHT RESERVED by lightweigh/rahul</p>
+		  <p>DEVELOPED BY RD</p>
 		</div>
 	</div>
 	<script>
