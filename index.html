@@ -28,7 +28,7 @@
 	</style>
 </head>
 <body>
-	<div class="container">
+	<div class="container" style="margin-bottom: 66px;">
 		<div id ="userFormArea" class="row">
 			<div class="col-md-12">
 				<form id="userForm">
@@ -40,7 +40,7 @@
 
 						<input type="button" class="btn btn-primary" value="login" id="login" placeholder="Enter your name" />
 					</div>
-					<p>Welcome to lightweig</p>
+					<p>Welcome to lightweigh</p>
 					<p>A generic application development zone.</p>
 					<p>Our main motive is to developing light weighted application to save internet data.</p>
 				</form>
@@ -72,8 +72,11 @@
 				</form>
 			</div>
 		</div>
+		
+	</div>
+	<div class="container">
 		<div class="footer">
-		  <p><i class="fa fa-copyright"></i> COPYRIGHT RESERVED by lightweigh/rahul</p>
+		  <p><i class="fa fa-copyright"></i> LIGHTWEIGH / RAHUL 2017</p>
 		  <p>DEVELOPED BY RD</p>
 		</div>
 	</div>
@@ -91,11 +94,9 @@
 
 			$("#login").click(function(e){
 				e.preventDefault();
-				console.log("inside");
 				socket.emit('new user', $username.val(), function(data){
 					console.log("data", data);
 					if(data){
-						console.log("inside if");
 						$userFormArea.hide();
 						$messageArea.show();
 					}
