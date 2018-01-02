@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>Lightweigh</title>
+	<link rel="shortcut icon" href="https://image.flaticon.com/teams/slug/freepik.jpg" />
 	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
@@ -81,6 +82,7 @@
 		</div>
 	</div>
 	<script>
+		var chatBackup = [];
 		$(function(){
 			var socket = io.connect();
 			var $messageForm = $('#messageForm');
@@ -91,7 +93,8 @@
 			var $users = $("#users");
 			var $userFormArea = $("#userFormArea");
 			var $username = $("#username");
-
+			
+			var ind=-1;
 			$("#login").click(function(e){
 				e.preventDefault();
 				socket.emit('new user', $username.val(), function(data){
@@ -133,8 +136,9 @@
 
 			socket.on('new message', function(data){
 				console.log(data);
-
-				$chat.append('<div class="well"><b><i style="color:blue;text-transform:uppercase;">'+data.name+'</i></b> '+data.msg+'<i class="fa fa-volume-up" style="padding-left:10px;cursor:pointer;" onclick="spk("'+data+'")"></i><div>');
+				ind=ind+1;
+				chatBackup.push(data);
+				$chat.append('<div class="well"><b><i style="color:blue;text-transform:uppercase;">'+data.name+'</i></b> '+data.msg+'<i class="fa fa-volume-up" style="padding-left:10px;cursor:pointer;" onclick="spk('+ind+')" id='+ind+'></i><div>');
 				var string1 = data.name+" sends  you a message";
 				var string2 = data.msg;
 				var utterance1 = new SpeechSynthesisUtterance(string1);
@@ -162,18 +166,30 @@
 			
 			// utterance
 
-			function spk(data){
-				console.log("ok");
-				console.log(data);
-				var string1 = data.name+" sends  you a message";
-				var string2 = data.msg;
-				var utterance1 = new SpeechSynthesisUtterance(string1);
-				var utterance2 = new SpeechSynthesisUtterance(string2);
-				speechSynthesis.speak(utterance1);
-				speechSynthesis.speak(utterance2);
-			}
+				// console.log("ok");
+				// console.log(data);
+				// var string1 = data.name+" sends  you a message";
+				// var string2 = data.msg;
+				// var utterance1 = new SpeechSynthesisUtterance(string1);
+				// var utterance2 = new SpeechSynthesisUtterance(string2);
+				// speechSynthesis.speak(utterance1);
+				// speechSynthesis.speak(utterance2);
+			
 
 		})
+		function spk(ind){
+			console.log("hello");
+			$("#"+ind).css('color', 'red');
+			console.log(chatBackup[ind]);
+			var string = chatBackup[ind].name+" said, "+chatBackup[ind].msg;
+			var utterance = new SpeechSynthesisUtterance(string);
+			utterance.rate=0.7;
+			speechSynthesis.speak(utterance);
+			utterance.onend = function(){
+				$("#"+ind).css('color', 'black');
+				console.log("end");
+			}
+		}
 
 		
 	</script>
