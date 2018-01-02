@@ -101,7 +101,28 @@
 						$messageArea.show();
 					}
 				});
+				
+				var string1 = "Welcome to lightweigh, "+$username.val();
+				var string2 = "hope you will enjoy our services";
 				$username.val('');
+				var utterance1 = new SpeechSynthesisUtterance(string1);
+				var utterance2 = new SpeechSynthesisUtterance(string2);
+				utterance2.rate=0.8;
+				speechSynthesis.speak(utterance1);
+				speechSynthesis.speak(utterance2);
+			})
+
+			$("#username").keypress(function(e){
+				if(e.which == 13){
+					socket.emit('new user', $username.val(), function(data){
+						console.log("data", data);
+						if(data){
+							$userFormArea.hide();
+							$messageArea.show();
+						}
+					});
+					$username.val('');
+				}
 			})
 
 			$("#send").click(function(e){
@@ -112,7 +133,14 @@
 
 			socket.on('new message', function(data){
 				console.log(data);
-				$chat.append('<div class="well"><b>'+data.name+'</b> '+data.msg+'<div>');
+
+				$chat.append('<div class="well"><b><i style="color:blue;text-transform:uppercase;">'+data.name+'</i></b> '+data.msg+'<i class="fa fa-volume-up" style="padding-left:10px;cursor:pointer;" onclick="spk("'+data+'")"></i><div>');
+				var string1 = data.name+" sends  you a message";
+				var string2 = data.msg;
+				var utterance1 = new SpeechSynthesisUtterance(string1);
+				var utterance2 = new SpeechSynthesisUtterance(string2);
+				speechSynthesis.speak(utterance1);
+				speechSynthesis.speak(utterance2);
 			});
 
 			socket.on('get users', function(data){
@@ -125,7 +153,29 @@
 				$users.html(html);
 			})
 
+			$("#message").keypress(function(e){
+				if(e.which==13){
+					socket.emit('send message', $message.val());
+					$message.val('');
+				}
+			});
+			
+			// utterance
+
+			function spk(data){
+				console.log("ok");
+				console.log(data);
+				var string1 = data.name+" sends  you a message";
+				var string2 = data.msg;
+				var utterance1 = new SpeechSynthesisUtterance(string1);
+				var utterance2 = new SpeechSynthesisUtterance(string2);
+				speechSynthesis.speak(utterance1);
+				speechSynthesis.speak(utterance2);
+			}
+
 		})
+
+		
 	</script>
 </body>
 </html>
