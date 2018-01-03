@@ -6,8 +6,8 @@
 	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
-	<script src="http://jyunming-chen.github.io/webspeech/platform/platform.js"></script>
-	<script src="http://jyunming-chen.github.io/webspeech/webspeech/src/webspeech.js"></script>
+	<!-- <script src="http://jyunming-chen.github.io/webspeech/platform/platform.js"></script> -->
+	<!-- <script src="http://jyunming-chen.github.io/webspeech/webspeech/src/webspeech.js"></script> -->
 	<script src="/socket.io/socket.io.js"></script>
 	<style>
 		body{
@@ -44,6 +44,7 @@
 						<input type="button" class="btn btn-primary" value="login" id="login"/>
 						<input type="button" class="btn btn-danger" value="speak" id="speak"/>
 					</div>
+					<div id="output"></div>
 					<p>Welcome to lightweigh</p>
 					<p>A generic application development zone.</p>
 					<p>Our main motive is to developing light weighted application to save internet data.</p>
@@ -119,16 +120,31 @@
 				speechSynthesis.speak(utterance2);
 			})
 
+			// $("#speak").click(function(e){
+			// 		e.preventDefault();
+			// 		var speaker = new RobotSpeaker();
+			// 		var listener = new AudioListener();
+			// 		console.log("speaking..");
+			// 		listener.listen("en", function (text) {
+			// 			console.log("text",text);
+			// 		    document.getElementById("username").value = text;
+			// 		});
+			// 	});
 			$("#speak").click(function(e){
-					e.preventDefault();
-					var speaker = new RobotSpeaker();
-					var listener = new AudioListener();
-					console.log("speaking..");
-					listener.listen("en", function (text) {
-					    document.getElementById("username").value = text;
-					});
-				});
-			
+				var recognition = new webkitSpeechRecognition();
+				recognition.continuous = true;
+				console.log("speaking start");
+				recognition.onresult = function(event) { 
+					console.log(event);
+					var output = document.getElementById("output");
+					output.innerHTML = "";
+					for(var i=0; i<event.results.length; i++){
+						output.innerHTML = output.innerHTML + event.results[i][0].transcript;
+					}
+				}
+				recognition.start();
+			})
+
 			$("#username").keypress(function(e){
 				if(e.which == 13){
 					socket.emit('new user', $username.val(), function(data){
