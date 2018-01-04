@@ -173,6 +173,9 @@
 
 					});
 					
+					userDetail = $username.val();
+					$("#user-details").html('<li class="list-group-item">'+userDetail+'</li>');
+					$("#user-details").append('<li class="list-group-item"><input type="button" value="sign out" id="out" class="btn btn-danger" onclick="load()"></li>');
 					var string1 = "Welcome to lightweigh, "+$username.val();
 					var string2 = "hope you will enjoy our services";
 					$username.val('');
@@ -181,7 +184,6 @@
 					utterance2.rate=0.8;
 					speechSynthesis.speak(utterance1);
 					speechSynthesis.speak(utterance2);
-					$username.val('');
 				}
 			})
 
