@@ -28,6 +28,10 @@
 		   color: white;
 		   text-align: center;
 		}
+		#output{
+			font-weight: bold;
+			color: blue;
+		}
 	</style>
 </head>
 <body>
@@ -131,7 +135,9 @@
 			// 		});
 			// 	});
 			$("#speak").click(function(e){
+				e.preventDefault();
 				var recognition = new webkitSpeechRecognition();
+				var transcript="";
 				recognition.continuous = true;
 				console.log("speaking start");
 				recognition.onresult = function(event) { 
@@ -139,14 +145,22 @@
 					var output = document.getElementById("output");
 					output.innerHTML = "";
 					for(var i=0; i<event.results.length; i++){
-						output.innerHTML = output.innerHTML + event.results[i][0].transcript;
+						transcript = transcript + event.results[i][0].transcript;
 					}
+					output.innerHTML = transcript;
+					console.log(transcript);
+					document.getElementById("username").value = transcript;
+					recognition.stop();
 				}
+				console.log("joy guru");
 				recognition.start();
+
 			})
 
 			$("#username").keypress(function(e){
+
 				if(e.which == 13){
+					e.preventDefault();
 					socket.emit('new user', $username.val(), function(data){
 						console.log("data", data);
 						if(data){
@@ -154,6 +168,15 @@
 							$messageArea.show();
 						}
 					});
+					
+					var string1 = "Welcome to lightweigh, "+$username.val();
+					var string2 = "hope you will enjoy our services";
+					$username.val('');
+					var utterance1 = new SpeechSynthesisUtterance(string1);
+					var utterance2 = new SpeechSynthesisUtterance(string2);
+					utterance2.rate=0.8;
+					speechSynthesis.speak(utterance1);
+					speechSynthesis.speak(utterance2);
 					$username.val('');
 				}
 			})
