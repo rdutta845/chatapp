@@ -6,8 +6,6 @@
 	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
-	<!-- <script src="http://jyunming-chen.github.io/webspeech/platform/platform.js"></script> -->
-	<!-- <script src="http://jyunming-chen.github.io/webspeech/webspeech/src/webspeech.js"></script> -->
 	<script src="/socket.io/socket.io.js"></script>
 	<style>
 		body{
@@ -57,14 +55,23 @@
 		</div>
 
 		<div id="messageArea" class="row">
-			<div class="col-md-4">
+			<div class="col-md-6">
 				<div class="well">
 					<h3>Online User</h3>
 					<ul class="list-group" id="users"></ul>
 				</div>
 			</div>
 
-			<div class="col-md-8">
+			<div class="col-md-6">
+				<div class="well">
+					<h3>User Details</h3>
+					<ul class="list-group" id="user-details"></ul>
+				</div>
+			</div>
+
+			<div class="clearfix"></div>
+
+			<div class="col-md-12">
 				<div class="chat" id="chat">
 					
 				</div>
@@ -77,6 +84,7 @@
 						<br/>
 
 						<input type="button" class="btn btn-primary" value="send message" id="send"/>
+						<input type="button" class="btn btn-danger" value="sign out" onclick="load()"/>
 					</div>
 				</form>
 			</div>
@@ -91,6 +99,7 @@
 	</div>
 	<script>
 		var chatBackup = [];
+		var userDetail;
 		$(function(){
 			var socket = io.connect();
 			var $messageForm = $('#messageForm');
@@ -106,14 +115,18 @@
 			$("#login").click(function(e){
 				e.preventDefault();
 				socket.emit('new user', $username.val(), function(data){
-					console.log("data", data);
+					
+					console.log("word",userDetail);
 					if(data){
 						$userFormArea.hide();
 						$messageArea.show();
 					}
+					
 				});
 
-
+				userDetail = $username.val();
+				$("#user-details").html('<li class="list-group-item">'+userDetail+'</li>');
+				$("#user-details").append('<li class="list-group-item"><input type="button" value="sign out" id="out" class="btn btn-danger" onclick="load()"></li>');
 				var string1 = "Welcome to lightweigh, "+$username.val();
 				var string2 = "hope you will enjoy our services";
 				$username.val('');
@@ -122,18 +135,10 @@
 				utterance2.rate=0.8;
 				speechSynthesis.speak(utterance1);
 				speechSynthesis.speak(utterance2);
+
+
 			})
 
-			// $("#speak").click(function(e){
-			// 		e.preventDefault();
-			// 		var speaker = new RobotSpeaker();
-			// 		var listener = new AudioListener();
-			// 		console.log("speaking..");
-			// 		listener.listen("en", function (text) {
-			// 			console.log("text",text);
-			// 		    document.getElementById("username").value = text;
-			// 		});
-			// 	});
 			$("#speak").click(function(e){
 				e.preventDefault();
 				var recognition = new webkitSpeechRecognition();
@@ -148,11 +153,9 @@
 						transcript = transcript + event.results[i][0].transcript;
 					}
 					output.innerHTML = transcript;
-					console.log(transcript);
 					document.getElementById("username").value = transcript;
 					recognition.stop();
 				}
-				console.log("joy guru");
 				recognition.start();
 
 			})
@@ -167,6 +170,7 @@
 							$userFormArea.hide();
 							$messageArea.show();
 						}
+
 					});
 					
 					var string1 = "Welcome to lightweigh, "+$username.val();
@@ -192,12 +196,14 @@
 				ind=ind+1;
 				chatBackup.push(data);
 				$chat.append('<div class="well"><b><i style="color:blue;text-transform:uppercase;">'+data.name+'</i></b> '+data.msg+'<i class="fa fa-volume-up" style="padding-left:10px;cursor:pointer;" onclick="spk('+ind+')" id='+ind+'></i><div>');
-				var string1 = data.name+" sends  you a message";
-				var string2 = data.msg;
-				var utterance1 = new SpeechSynthesisUtterance(string1);
-				var utterance2 = new SpeechSynthesisUtterance(string2);
-				speechSynthesis.speak(utterance1);
-				speechSynthesis.speak(utterance2);
+				if(data.name.toLowerCase()!=userDetail.toLowerCase()){
+					var string1 = data.name+" sends  you a message";
+					var string2 = data.msg;
+					var utterance1 = new SpeechSynthesisUtterance(string1);
+					var utterance2 = new SpeechSynthesisUtterance(string2);
+					speechSynthesis.speak(utterance1);
+					speechSynthesis.speak(utterance2);
+				}
 			});
 
 			socket.on('get users', function(data){
@@ -217,6 +223,10 @@
 				}
 			});
 			
+			// $("#out").bind("click",function(e){
+			// 	console.log("out");
+			// 	window.location.reload();
+			// })
 			// utterance
 
 				// console.log("ok");
@@ -243,7 +253,11 @@
 				console.log("end");
 			}
 		}
+		function load(){
+			var str = "bye"+userDetail;
 
+			window.location.reload();
+		}
 		
 	</script>
 </body>
