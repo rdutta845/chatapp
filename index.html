@@ -32,7 +32,8 @@
 		}
 	</style>
 </head>
-<body>
+<body oncontextmenu="return false">
+<!-- <body> -->
 	<div class="container" style="margin-bottom: 66px;">
 		<div id ="userFormArea" class="row">
 			<div class="col-md-12">
@@ -125,8 +126,8 @@
 				});
 
 				userDetail = $username.val();
-				$("#user-details").html('<li class="list-group-item">'+userDetail+'</li>');
-				$("#user-details").append('<li class="list-group-item"><input type="button" value="sign out" id="out" class="btn btn-danger" onclick="load()"></li>');
+				$("#user-details").html('<li class="list-group-item"><b>User Name :</b> '+userDetail+'</li>');
+				$("#user-details").append('<li class="list-group-item"><input type="button" value="sign out" id="out" class="btn btn-danger" onclick="load()"> <input type="button" value="speak" class="btn btn-success" onclick="spkMsg()"> Language: English</li>');
 				var string1 = "Welcome to lightweigh, "+$username.val();
 				var string2 = "hope you will enjoy our services";
 				$username.val('');
@@ -258,6 +259,23 @@
 				console.log("end");
 			}
 		}
+		function spkMsg(){
+			var recognition = new webkitSpeechRecognition();
+			var transcript="";
+			recognition.continuous = true;
+			console.log("speaking start");
+			recognition.onresult = function(event) { 
+				console.log(event);
+				
+				for(var i=0; i<event.results.length; i++){
+					transcript = transcript + event.results[i][0].transcript;
+				}
+				
+				document.getElementById("message").value = transcript;
+				recognition.stop();
+			}
+			recognition.start();
+		}
 		function load(){
 			var str = "bye bye, "+userDetail+", see you soon";
 			var utterance = new SpeechSynthesisUtterance(str);
@@ -265,6 +283,26 @@
 			window.location.reload();
 		}
 		
+	document.onkeydown = function(e) {
+    if (e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86 || e.keyCode === 85 || e.keyCode === 117)) {//Alt+c, Alt+v will also be disabled sadly.
+        // window.location.reload();
+        // alert('not allowed');
+        
+         return false;
+    }else if((e.ctrlKey && e.shiftKey && e.keyCode==73) || (e.ctrlKey && e.shiftKey && e.keyCode==74)){
+    	// window.location.reload();
+    	// alert('not allowed');
+    	
+    	return false;
+    }else if(e.keyCode==123){
+
+    	return false;
+    }else{
+    	// alert(e.keyCode);
+    	return true;
+    }
+  };
+
 	</script>
 </body>
 </html>
