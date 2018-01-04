@@ -22,7 +22,7 @@
 		   left: 0;
 		   bottom: 0;
 		   width: 100%;
-		   background-color: gray;
+		   background-color: black;
 		   color: white;
 		   text-align: center;
 		}
@@ -161,29 +161,30 @@
 			})
 
 			$("#username").keypress(function(e){
-
+				
 				if(e.which == 13){
 					e.preventDefault();
-					socket.emit('new user', $username.val(), function(data){
-						console.log("data", data);
-						if(data){
-							$userFormArea.hide();
-							$messageArea.show();
-						}
+					$("#login").click();
+					// socket.emit('new user', $username.val(), function(data){
+					// 	console.log("data", data);
+					// 	if(data){
+					// 		$userFormArea.hide();
+					// 		$messageArea.show();
+					// 	}
 
-					});
+					// });
 					
-					userDetail = $username.val();
-					$("#user-details").html('<li class="list-group-item">'+userDetail+'</li>');
-					$("#user-details").append('<li class="list-group-item"><input type="button" value="sign out" id="out" class="btn btn-danger" onclick="load()"></li>');
-					var string1 = "Welcome to lightweigh, "+$username.val();
-					var string2 = "hope you will enjoy our services";
-					$username.val('');
-					var utterance1 = new SpeechSynthesisUtterance(string1);
-					var utterance2 = new SpeechSynthesisUtterance(string2);
-					utterance2.rate=0.8;
-					speechSynthesis.speak(utterance1);
-					speechSynthesis.speak(utterance2);
+					// userDetail = $username.val();
+					// $("#user-details").html('<li class="list-group-item">'+userDetail+'</li>');
+					// $("#user-details").append('<li class="list-group-item"><input type="button" value="sign out" id="out" class="btn btn-danger" onclick="load()"></li>');
+					// var string1 = "Welcome to lightweigh, "+$username.val();
+					// var string2 = "hope you will enjoy our services";
+					// $username.val('');
+					// var utterance1 = new SpeechSynthesisUtterance(string1);
+					// var utterance2 = new SpeechSynthesisUtterance(string2);
+					// utterance2.rate=0.8;
+					// speechSynthesis.speak(utterance1);
+					// speechSynthesis.speak(utterance2);
 				}
 			})
 
@@ -220,8 +221,10 @@
 
 			$("#message").keypress(function(e){
 				if(e.which==13){
-					socket.emit('send message', $message.val());
-					$message.val('');
+					e.preventDefault();
+					$("#send").click();
+					// socket.emit('send message', $message.val());
+					// $message.val('');
 				}
 			});
 			
@@ -256,8 +259,9 @@
 			}
 		}
 		function load(){
-			var str = "bye"+userDetail;
-
+			var str = "bye bye, "+userDetail+", see you soon";
+			var utterance = new SpeechSynthesisUtterance(str);
+			speechSynthesis.speak(utterance);
 			window.location.reload();
 		}
 		
